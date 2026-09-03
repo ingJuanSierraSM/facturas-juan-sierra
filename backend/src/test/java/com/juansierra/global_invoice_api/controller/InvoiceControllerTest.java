@@ -9,13 +9,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.juansierra.global_invoice_api.config.SecurityConfig;
 import com.juansierra.global_invoice_api.dto.request.CreateInvoiceRequest;
 import com.juansierra.global_invoice_api.dto.response.InvoiceDetailResponse;
 import com.juansierra.global_invoice_api.dto.response.InvoiceResponse;
 import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
 import com.juansierra.global_invoice_api.integration.LegacyServiceException;
+import com.juansierra.global_invoice_api.security.JwtAuthenticationFilter;
 import com.juansierra.global_invoice_api.service.interfaces.InvoiceService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,13 +23,20 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(InvoiceController.class)
-@Import({GlobalExceptionHandler.class, SecurityConfig.class})
+@WebMvcTest(
+        value = InvoiceController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
 class InvoiceControllerTest {
 
     @Autowired

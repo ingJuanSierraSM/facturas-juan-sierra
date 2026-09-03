@@ -18,3 +18,8 @@ spring:
 integration:
   dataflex:
     number-conversion-url: https://www.dataaccess.com/webservicesserver/NumberConversion.wso
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:global-invoice-academic-secret-change-me-2026}
+    expiration-ms: 3600000

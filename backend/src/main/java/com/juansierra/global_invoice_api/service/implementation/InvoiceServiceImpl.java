@@ -11,7 +11,7 @@ import com.juansierra.global_invoice_api.integration.NumberConversionClient;
 import com.juansierra.global_invoice_api.mapper.InvoiceMapper;
 import com.juansierra.global_invoice_api.repository.InvoiceRepository;
 import com.juansierra.global_invoice_api.repository.InvoiceTypeConfigRepository;
-import com.juansierra.global_invoice_api.repository.UserRepository;
+import com.juansierra.global_invoice_api.security.AuthenticatedUserService;
 import com.juansierra.global_invoice_api.service.interfaces.InvoiceService;
 import com.juansierra.global_invoice_api.strategy.TaxCalculation;
 import com.juansierra.global_invoice_api.strategy.TaxStrategy;
@@ -23,11 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
-    private static final String DEFAULT_INVOICE_CREATOR_USERNAME = "operator";
-
     private final InvoiceRepository invoiceRepository;
     private final InvoiceTypeConfigRepository invoiceTypeConfigRepository;
-    private final UserRepository userRepository;
+    private final AuthenticatedUserService authenticatedUserService;
     private final InvoiceMapper invoiceMapper;
     private final TaxStrategyResolver taxStrategyResolver;
     private final NumberConversionClient numberConversionClient;
@@ -35,14 +33,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceServiceImpl(
             InvoiceRepository invoiceRepository,
             InvoiceTypeConfigRepository invoiceTypeConfigRepository,
-            UserRepository userRepository,
+            AuthenticatedUserService authenticatedUserService,
             InvoiceMapper invoiceMapper,
             TaxStrategyResolver taxStrategyResolver,
             NumberConversionClient numberConversionClient
     ) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceTypeConfigRepository = invoiceTypeConfigRepository;
-        this.userRepository = userRepository;
+        this.authenticatedUserService = authenticatedUserService;
         this.invoiceMapper = invoiceMapper;
         this.taxStrategyResolver = taxStrategyResolver;
         this.numberConversionClient = numberConversionClient;
@@ -58,10 +56,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 ));
         TaxStrategy taxStrategy = taxStrategyResolver.resolve(request.getType());
         TaxCalculation calculation = taxStrategy.calculate(request.getSubtotal(), taxConfiguration);
-        User createdBy = userRepository.findByUsername(DEFAULT_INVOICE_CREATOR_USERNAME)
-                .orElseThrow(() -> new IllegalStateException(
-                        "No existe el usuario demo " + DEFAULT_INVOICE_CREATOR_USERNAME
-                ));
+        User createdBy = authenticatedUserService.getCurrentUser();
 
         Invoice invoice = invoiceMapper.toEntity(request);
         applyTaxCalculation(invoice, calculation);

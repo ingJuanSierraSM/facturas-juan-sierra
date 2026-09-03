@@ -22,7 +22,7 @@ import com.juansierra.global_invoice_api.integration.NumberConversionClient;
 import com.juansierra.global_invoice_api.mapper.InvoiceMapper;
 import com.juansierra.global_invoice_api.repository.InvoiceRepository;
 import com.juansierra.global_invoice_api.repository.InvoiceTypeConfigRepository;
-import com.juansierra.global_invoice_api.repository.UserRepository;
+import com.juansierra.global_invoice_api.security.AuthenticatedUserService;
 import com.juansierra.global_invoice_api.strategy.TaxCalculation;
 import com.juansierra.global_invoice_api.strategy.TaxStrategy;
 import com.juansierra.global_invoice_api.strategy.TaxStrategyResolver;
@@ -47,7 +47,7 @@ class InvoiceServiceImplTest {
     private InvoiceTypeConfigRepository invoiceTypeConfigRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private AuthenticatedUserService authenticatedUserService;
 
     @Mock
     private InvoiceMapper invoiceMapper;
@@ -68,7 +68,7 @@ class InvoiceServiceImplTest {
         invoiceService = new InvoiceServiceImpl(
                 invoiceRepository,
                 invoiceTypeConfigRepository,
-                userRepository,
+                authenticatedUserService,
                 invoiceMapper,
                 taxStrategyResolver,
                 numberConversionClient
@@ -96,7 +96,7 @@ class InvoiceServiceImplTest {
                 .thenReturn(Optional.of(taxConfiguration));
         when(taxStrategyResolver.resolve(InvoiceType.GOVERNMENT)).thenReturn(taxStrategy);
         when(taxStrategy.calculate(request.getSubtotal(), taxConfiguration)).thenReturn(calculation);
-        when(userRepository.findByUsername("operator")).thenReturn(Optional.of(operator));
+        when(authenticatedUserService.getCurrentUser()).thenReturn(operator);
         when(invoiceMapper.toEntity(request)).thenReturn(invoice);
         when(invoiceRepository.save(invoice)).thenReturn(savedInvoice);
         when(invoiceMapper.toResponse(savedInvoice)).thenReturn(expectedResponse);
@@ -114,7 +114,7 @@ class InvoiceServiceImplTest {
         assertThat(invoiceToPersist.getWithholdingAmount()).isEqualByComparingTo("5.00");
         assertThat(invoiceToPersist.getTotal()).isEqualByComparingTo("114.00");
         assertThat(invoiceToPersist.getCreatedBy()).isSameAs(operator);
-        verify(userRepository).findByUsername("operator");
+        verify(authenticatedUserService).getCurrentUser();
     }
 
     @Test
