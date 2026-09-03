@@ -20,6 +20,27 @@ describe('InvoiceService', () => {
     httpTesting.verify();
   });
 
+  it('should create an invoice', () => {
+    invoiceService
+      .create({
+        invoiceNumber: 'INV-EXPORT-004',
+        type: 'EXPORT',
+        subtotal: 100000,
+        customsCode: 'EXP-CO-004',
+      })
+      .subscribe();
+
+    const request = httpTesting.expectOne('/api/v1/invoices');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({
+      invoiceNumber: 'INV-EXPORT-004',
+      type: 'EXPORT',
+      subtotal: 100000,
+      customsCode: 'EXP-CO-004',
+    });
+    request.flush({ id: 1 });
+  });
+
   it('should request the shared invoice list endpoint', () => {
     invoiceService.findAll().subscribe();
 

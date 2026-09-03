@@ -1,5 +1,12 @@
 export type InvoiceType = 'NATIONAL' | 'EXPORT' | 'GOVERNMENT';
 
+export interface CreateInvoiceRequest {
+  invoiceNumber: string;
+  type: InvoiceType;
+  subtotal: number;
+  customsCode?: string;
+}
+
 export interface InvoiceResponse {
   id: number;
   invoiceNumber: string;

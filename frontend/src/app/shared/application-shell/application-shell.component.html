@@ -28,6 +28,12 @@
         <ng-icon name="lucideReceiptText" aria-hidden="true" />
         Facturas
       </a>
+      @if (isOperator()) {
+        <a routerLink="/facturas/nueva" routerLinkActive="is-active">
+          <ng-icon name="lucideFilePlus2" aria-hidden="true" />
+          Crear factura
+        </a>
+      }
     </nav>
 
     <main class="application-content">

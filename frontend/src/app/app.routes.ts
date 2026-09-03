@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { auditorGuard } from './core/auth/auditor.guard';
 import { authGuard } from './core/auth/auth.guard';
+import { operatorGuard } from './core/auth/operator.guard';
 import { LoginComponent } from './features/auth/login/login.component';
+import { InvoiceCreateComponent } from './features/invoices/invoice-create/invoice-create.component';
 import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoice-detail.component';
 import { InvoiceListComponent } from './features/invoices/invoice-list/invoice-list.component';
 import { ApplicationShellComponent } from './shared/application-shell/application-shell.component';
@@ -20,6 +22,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((module) => module.DashboardComponent),
       },
+      { path: 'facturas/nueva', component: InvoiceCreateComponent, canActivate: [operatorGuard] },
       { path: 'facturas', component: InvoiceListComponent },
       { path: 'facturas/:invoiceId', component: InvoiceDetailComponent },
     ],
