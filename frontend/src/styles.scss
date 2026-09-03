@@ -1,3 +1,6 @@
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+
 * {
   box-sizing: border-box;
 }
@@ -10,4 +13,9 @@ body {
 
 body {
   background: #ffffff;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+strong {
+  font-weight: 600;
 }

@@ -14,7 +14,6 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenKey = 'global-invoice.token';
   private readonly tokenTypeKey = 'global-invoice.token-type';
-  private readonly rememberedUsernameKey = 'global-invoice.remembered-username';
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http
@@ -55,19 +54,6 @@ export class AuthService {
     }
 
     return { username: payload.sub, role: payload.role };
-  }
-
-  rememberUsername(username: string, shouldRemember: boolean): void {
-    if (shouldRemember) {
-      localStorage.setItem(this.rememberedUsernameKey, username);
-      return;
-    }
-
-    localStorage.removeItem(this.rememberedUsernameKey);
-  }
-
-  getRememberedUsername(): string {
-    return localStorage.getItem(this.rememberedUsernameKey) ?? '';
   }
 
   logout(): void {

@@ -46,8 +46,8 @@
                   {{ getInvoiceTypeLabel(invoice.type) }}
                 </span>
               </td>
-              <td class="numeric">{{ invoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
-              <td class="numeric">{{ invoice.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td class="numeric">{{ invoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</td>
+              <td class="numeric">{{ invoice.total | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</td>
               <td class="numeric">{{ invoice.createdAt | date: 'dd MMM y' : undefined : 'es-CO' }}</td>
               <td class="details-column">
                 <a

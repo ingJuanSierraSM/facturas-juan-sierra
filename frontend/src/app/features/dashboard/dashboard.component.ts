@@ -6,6 +6,7 @@ import { DashboardSummary, createDashboardSummaries } from '../../core/dashboard
 import { DashboardService } from '../../core/dashboard/dashboard.service';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, ChartDataLabels);
+Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
 
 @Component({
   selector: 'app-dashboard',
@@ -120,7 +121,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return new Intl.NumberFormat('es-CO', {
       currency: 'COP',
       currencyDisplay: 'narrowSymbol',
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
       style: 'currency',
     }).format(value);
   }

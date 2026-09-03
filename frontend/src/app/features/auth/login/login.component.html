@@ -32,7 +32,7 @@
         <input
           id="password"
           name="password"
-          type="password"
+          [type]="isPasswordVisible() ? 'text' : 'password'"
           autocomplete="current-password"
           formControlName="password"
           [attr.aria-invalid]="loginForm.controls.password.invalid && loginForm.controls.password.touched"
@@ -42,9 +42,15 @@
         }
       </div>
 
-      <label class="remember-control" for="remember-session">
-        <input id="remember-session" name="remember-session" type="checkbox" formControlName="rememberSession" />
-        <span>Recordar mis datos de identidad</span>
+      <label class="show-password-control" for="show-password">
+        <input
+          id="show-password"
+          name="show-password"
+          type="checkbox"
+          [checked]="isPasswordVisible()"
+          (change)="togglePasswordVisibility()"
+        />
+        <span>Mostrar contraseña</span>
       </label>
 
       @if (errorMessage()) {

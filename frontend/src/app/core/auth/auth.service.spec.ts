@@ -9,7 +9,6 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
-    localStorage.clear();
 
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
@@ -36,16 +35,6 @@ describe('AuthService', () => {
 
     expect(authService.getToken()).toBe(token);
     expect(authService.getAuthenticatedUser()).toEqual({ username: 'auditor', role: 'AUDITOR' });
-  });
-
-  it('should remember only the username when requested', () => {
-    authService.rememberUsername('operator', true);
-
-    expect(authService.getRememberedUsername()).toBe('operator');
-
-    authService.rememberUsername('operator', false);
-
-    expect(authService.getRememberedUsername()).toBe('');
   });
 
   it('should discard an expired token', () => {

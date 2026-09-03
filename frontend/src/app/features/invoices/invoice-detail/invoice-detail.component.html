@@ -36,10 +36,10 @@
       <section aria-labelledby="tax-calculation-title">
         <h2 id="tax-calculation-title">Cálculo tributario</h2>
         <dl>
-          <div><dt>Subtotal</dt><dd>{{ currentInvoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
-          <div><dt>IVA ({{ currentInvoice.vatRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.taxAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
-          <div><dt>Retención ({{ currentInvoice.withholdingRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.withholdingAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
-          <div class="total-row"><dt>Total</dt><dd>{{ currentInvoice.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
+          <div><dt>Subtotal</dt><dd>{{ currentInvoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</dd></div>
+          <div><dt>IVA ({{ currentInvoice.vatRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.taxAmount | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</dd></div>
+          <div><dt>Retención ({{ currentInvoice.withholdingRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.withholdingAmount | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</dd></div>
+          <div class="total-row"><dt>Total</dt><dd>{{ currentInvoice.total | currency: 'COP' : 'symbol-narrow' : '1.2-2' : 'es-CO' }}</dd></div>
         </dl>
       </section>
     </div>

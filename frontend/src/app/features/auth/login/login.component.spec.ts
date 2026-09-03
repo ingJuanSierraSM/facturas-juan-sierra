@@ -24,5 +24,15 @@ describe('LoginComponent', () => {
 
     expect(fixture.nativeElement.querySelector('#username')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('#password')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#show-password')).toBeTruthy();
+  });
+
+  it('should toggle the password visibility', () => {
+    const fixture = TestBed.createComponent(LoginComponent);
+    const component = fixture.componentInstance;
+
+    component.togglePasswordVisibility();
+
+    expect(component.isPasswordVisible()).toBe(true);
   });
 });

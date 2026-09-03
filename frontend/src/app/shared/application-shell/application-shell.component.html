@@ -19,17 +19,17 @@
     <nav class="application-navigation" aria-label="Navegación principal">
       <p>GLOBAL INVOICE</p>
       @if (isAuditor()) {
-        <a routerLink="/dashboard" routerLinkActive="is-active">
+        <a routerLink="/dashboard" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
           <ng-icon name="lucideChartPie" aria-hidden="true" />
           Dashboard
         </a>
       }
-      <a routerLink="/facturas" routerLinkActive="is-active">
+      <a routerLink="/facturas" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
         <ng-icon name="lucideReceiptText" aria-hidden="true" />
         Facturas
       </a>
       @if (isOperator()) {
-        <a routerLink="/facturas/nueva" routerLinkActive="is-active">
+        <a routerLink="/facturas/nueva" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
           <ng-icon name="lucideFilePlus2" aria-hidden="true" />
           Crear factura
         </a>

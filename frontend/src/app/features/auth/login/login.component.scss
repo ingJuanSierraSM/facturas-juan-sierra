@@ -1,7 +1,7 @@
 :host {
   color: #2d2d2f;
   display: block;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: inherit;
   min-height: 100dvh;
 }
 
@@ -75,7 +75,7 @@
 .side-brand {
   color: #55575b;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   margin: 0;
   position: absolute;
@@ -101,7 +101,7 @@
 .hello,
 .welcome-copy h1 {
   color: #29292d;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.05;
   margin: 0;
@@ -109,6 +109,7 @@
 
 .hello {
   font-size: 29px;
+  font-weight: 400;
 }
 
 .welcome-copy h1 {
@@ -130,7 +131,7 @@
 .field-group label {
   color: #505050;
   font-size: 23px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.2;
 }
@@ -169,7 +170,7 @@
   color: #9c211c;
 }
 
-.remember-control {
+.show-password-control {
   align-items: center;
   color: #565656;
   cursor: pointer;
@@ -179,7 +180,7 @@
   letter-spacing: 0;
 }
 
-.remember-control input {
+.show-password-control input {
   accent-color: #d6302a;
   height: 22px;
   margin: 0;
@@ -196,7 +197,7 @@
   display: inline-flex;
   font: inherit;
   font-size: 23px;
-  font-weight: 800;
+  font-weight: 600;
   height: 56px;
   justify-content: center;
   letter-spacing: 0;
@@ -247,7 +248,7 @@
     font-size: 20px;
   }
 
-  .remember-control {
+  .show-password-control {
     align-items: start;
     font-size: 17px;
   }

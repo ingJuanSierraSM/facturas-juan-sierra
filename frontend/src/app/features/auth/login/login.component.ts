@@ -16,19 +16,15 @@ export class LoginComponent {
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
+  readonly isPasswordVisible = signal(false);
   readonly errorMessage = signal('');
   readonly loginForm = this.formBuilder.nonNullable.group({
     username: ['', [Validators.required]],
     password: ['', [Validators.required]],
-    rememberSession: [false],
   });
 
-  constructor() {
-    const rememberedUsername = this.authService.getRememberedUsername();
-
-    if (rememberedUsername) {
-      this.loginForm.patchValue({ username: rememberedUsername, rememberSession: true });
-    }
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible.update((visible) => !visible);
   }
 
   submitLogin(): void {
@@ -39,7 +35,7 @@ export class LoginComponent {
       return;
     }
 
-    const { username, password, rememberSession } = this.loginForm.getRawValue();
+    const { username, password } = this.loginForm.getRawValue();
     const normalizedUsername = username.trim();
 
     if (!normalizedUsername) {
@@ -52,7 +48,6 @@ export class LoginComponent {
 
     this.authService.login({ username: normalizedUsername, password }).subscribe({
       next: () => {
-        this.authService.rememberUsername(normalizedUsername, rememberSession);
         this.isSubmitting.set(false);
         const destination = this.authService.getAuthenticatedUser()?.role === 'AUDITOR'
           ? '/dashboard'
