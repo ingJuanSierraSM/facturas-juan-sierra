@@ -11,6 +11,7 @@ import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.enums.UserRole;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 class InvoiceMapperTest {
@@ -49,14 +50,11 @@ class InvoiceMapperTest {
         assertThat(response.invoiceNumber()).isEqualTo("INV-001");
         assertThat(response.type()).isEqualTo(InvoiceType.NATIONAL);
         assertThat(response.subtotal()).isEqualByComparingTo("100.00");
-        assertThat(response.vatRate()).isEqualByComparingTo("0.19");
-        assertThat(response.taxAmount()).isEqualByComparingTo("19.00");
-        assertThat(response.withholdingRate()).isEqualByComparingTo("0.00");
-        assertThat(response.withholdingAmount()).isEqualByComparingTo("0.00");
         assertThat(response.total()).isEqualByComparingTo("119.00");
-        assertThat(response.customsCode()).isNull();
         assertThat(response.createdAt()).isEqualTo(LocalDateTime.of(2026, 9, 2, 20, 0));
-        assertThat(response.createdByUsername()).isEqualTo("operator");
+        assertThat(Arrays.stream(InvoiceResponse.class.getRecordComponents())
+                .map(component -> component.getName()))
+                .containsExactly("id", "invoiceNumber", "type", "subtotal", "total", "createdAt");
     }
 
     @Test

@@ -9,13 +9,7 @@ public record InvoiceResponse(
         String invoiceNumber,
         InvoiceType type,
         BigDecimal subtotal,
-        BigDecimal vatRate,
-        BigDecimal taxAmount,
-        BigDecimal withholdingRate,
-        BigDecimal withholdingAmount,
         BigDecimal total,
-        String customsCode,
-        LocalDateTime createdAt,
-        String createdByUsername
+        LocalDateTime createdAt
 ) {
 }

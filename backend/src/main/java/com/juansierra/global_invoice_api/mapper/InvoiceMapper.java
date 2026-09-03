@@ -25,14 +25,8 @@ public class InvoiceMapper {
                 invoice.getInvoiceNumber(),
                 invoice.getType(),
                 invoice.getSubtotal(),
-                invoice.getVatRate(),
-                invoice.getTaxAmount(),
-                invoice.getWithholdingRate(),
-                invoice.getWithholdingAmount(),
                 invoice.getTotal(),
-                invoice.getCustomsCode(),
-                invoice.getCreatedAt(),
-                getCreatedByUsername(invoice)
+                invoice.getCreatedAt()
         );
     }
 
