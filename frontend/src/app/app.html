@@ -15,23 +15,53 @@
       <h1 id="login-title">Nos alegra que estés aquí</h1>
     </header>
 
-    <form class="login-form" novalidate (submit)="$event.preventDefault()">
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()" novalidate>
       <div class="field-group">
         <label for="username">Ingrese su usuario</label>
-        <input id="username" name="username" type="text" autocomplete="username" />
+        <input
+          id="username"
+          name="username"
+          type="text"
+          autocomplete="username"
+          formControlName="username"
+          [attr.aria-invalid]="loginForm.controls.username.invalid && loginForm.controls.username.touched"
+        />
+        @if (loginForm.controls.username.invalid && loginForm.controls.username.touched) {
+          <p class="field-error">El usuario es obligatorio.</p>
+        }
       </div>
 
       <div class="field-group">
         <label for="password">Ingrese su contraseña</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" />
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          formControlName="password"
+          [attr.aria-invalid]="loginForm.controls.password.invalid && loginForm.controls.password.touched"
+        />
+        @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+          <p class="field-error">La contraseña es obligatoria.</p>
+        }
       </div>
 
       <label class="remember-control" for="remember-session">
-        <input id="remember-session" name="remember-session" type="checkbox" />
+        <input id="remember-session" name="remember-session" type="checkbox" formControlName="rememberSession" />
         <span>Recordar mis datos de identidad</span>
       </label>
 
-      <button class="continue-button" type="submit">Continuar</button>
+      @if (errorMessage()) {
+        <p class="form-message form-message--error" aria-live="polite">{{ errorMessage() }}</p>
+      }
+
+      @if (successMessage()) {
+        <p class="form-message form-message--success" aria-live="polite">{{ successMessage() }}</p>
+      }
+
+      <button class="continue-button" type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Ingresando...' : 'Continuar' }}
+      </button>
     </form>
   </section>
 </main>

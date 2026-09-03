@@ -153,6 +153,26 @@
   box-shadow: 0 0 0 3px rgba(214, 48, 42, 0.14);
 }
 
+.field-group input[aria-invalid='true'] {
+  border-color: #bc2e27;
+}
+
+.field-error,
+.form-message {
+  font-size: 16px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.field-error,
+.form-message--error {
+  color: #9c211c;
+}
+
+.form-message--success {
+  color: #267345;
+}
+
 .remember-control {
   align-items: center;
   color: #565656;
@@ -193,6 +213,11 @@
   background: #bd2d27;
 }
 
+.continue-button:disabled {
+  background: #c98c88;
+  cursor: wait;
+}
+
 @media (max-width: 720px) {
   .access-page {
     padding: 40px 22px 28px;
@@ -229,5 +254,10 @@
   .remember-control {
     align-items: start;
     font-size: 17px;
+  }
+
+  .field-error,
+  .form-message {
+    font-size: 14px;
   }
 }
