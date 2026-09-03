@@ -16,6 +16,7 @@ import com.juansierra.global_invoice_api.entity.InvoiceTypeConfig;
 import com.juansierra.global_invoice_api.entity.User;
 import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.enums.UserRole;
+import com.juansierra.global_invoice_api.exception.DuplicateInvoiceException;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
 import com.juansierra.global_invoice_api.integration.LegacyServiceException;
 import com.juansierra.global_invoice_api.integration.NumberConversionClient;
@@ -130,6 +131,28 @@ class InvoiceServiceImplTest {
 
         verify(taxStrategyResolver, never()).resolve(any());
         verify(invoiceRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldRejectInvoiceCreationWhenInvoiceNumberAlreadyExists() {
+        CreateInvoiceRequest request = createRequest();
+
+        when(invoiceRepository.existsByInvoiceNumber("INV-001")).thenReturn(true);
+
+        assertThatThrownBy(() -> invoiceService.createInvoice(request))
+                .isInstanceOf(DuplicateInvoiceException.class)
+                .hasMessage("Ya existe una factura con el numero INV-001");
+
+        verify(invoiceRepository).existsByInvoiceNumber("INV-001");
+        verify(invoiceRepository, never()).save(any());
+        verifyNoInteractions(
+                invoiceTypeConfigRepository,
+                authenticatedUserService,
+                invoiceMapper,
+                taxStrategyResolver,
+                taxStrategy,
+                numberConversionClient
+        );
     }
 
     @Test

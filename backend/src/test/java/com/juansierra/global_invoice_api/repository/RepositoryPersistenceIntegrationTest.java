@@ -79,7 +79,12 @@ class RepositoryPersistenceIntegrationTest {
         String invoiceNumber = nextInvoiceNumber();
         invoiceRepository.saveAndFlush(buildGovernmentInvoice(invoiceNumber, operator));
 
-        assertThatThrownBy(() -> invoiceRepository.saveAndFlush(buildGovernmentInvoice(invoiceNumber, operator)))
+        assertThatThrownBy(() -> invoiceRepository.saveAndFlush(buildInvoice(
+                invoiceNumber,
+                InvoiceType.EXPORT,
+                new BigDecimal("100.00"),
+                operator
+        )))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

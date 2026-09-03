@@ -13,6 +13,7 @@ import com.juansierra.global_invoice_api.dto.request.CreateInvoiceRequest;
 import com.juansierra.global_invoice_api.dto.response.InvoiceDetailResponse;
 import com.juansierra.global_invoice_api.dto.response.InvoiceResponse;
 import com.juansierra.global_invoice_api.enums.InvoiceType;
+import com.juansierra.global_invoice_api.exception.DuplicateInvoiceException;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
 import com.juansierra.global_invoice_api.integration.LegacyServiceException;
 import com.juansierra.global_invoice_api.security.JwtAuthenticationFilter;
@@ -149,6 +150,28 @@ class InvoiceControllerTest {
                 .andExpect(jsonPath("$.errors.customsCodeValid").exists());
 
         verifyNoInteractions(invoiceService);
+    }
+
+    @Test
+    void shouldReturnConflictWhenInvoiceNumberAlreadyExists() throws Exception {
+        when(invoiceService.createInvoice(any(CreateInvoiceRequest.class)))
+                .thenThrow(new DuplicateInvoiceException("INV-001"));
+
+        mockMvc.perform(post("/api/v1/invoices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "invoiceNumber": "INV-001",
+                                  "type": "EXPORT",
+                                  "subtotal": 100000,
+                                  "customsCode": "CO-001"
+                                }
+                                """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("Ya existe una factura con el numero INV-001"))
+                .andExpect(jsonPath("$.errors.invoiceNumber")
+                        .value("El numero de factura ya se encuentra registrado"));
     }
 
     @Test
