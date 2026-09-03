@@ -2,6 +2,7 @@ package com.juansierra.global_invoice_api.controller;
 
 import com.juansierra.global_invoice_api.dto.response.ApiErrorResponse;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
+import com.juansierra.global_invoice_api.integration.LegacyServiceException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,5 +43,17 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(LegacyServiceException.class)
+    public ResponseEntity<ApiErrorResponse> handleLegacyServiceException(LegacyServiceException exception) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_GATEWAY.value(),
+                exception.getMessage(),
+                Map.of()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
     }
 }

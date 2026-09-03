@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.juansierra.global_invoice_api.dto.request.CreateInvoiceRequest;
@@ -16,6 +17,8 @@ import com.juansierra.global_invoice_api.entity.User;
 import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.enums.UserRole;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
+import com.juansierra.global_invoice_api.integration.LegacyServiceException;
+import com.juansierra.global_invoice_api.integration.NumberConversionClient;
 import com.juansierra.global_invoice_api.mapper.InvoiceMapper;
 import com.juansierra.global_invoice_api.repository.InvoiceRepository;
 import com.juansierra.global_invoice_api.repository.InvoiceTypeConfigRepository;
@@ -55,6 +58,9 @@ class InvoiceServiceImplTest {
     @Mock
     private TaxStrategy taxStrategy;
 
+    @Mock
+    private NumberConversionClient numberConversionClient;
+
     private InvoiceServiceImpl invoiceService;
 
     @BeforeEach
@@ -64,7 +70,8 @@ class InvoiceServiceImplTest {
                 invoiceTypeConfigRepository,
                 userRepository,
                 invoiceMapper,
-                taxStrategyResolver
+                taxStrategyResolver,
+                numberConversionClient
         );
     }
 
@@ -141,20 +148,43 @@ class InvoiceServiceImplTest {
         assertThat(result).containsExactly(firstResponse, secondResponse);
         verify(invoiceMapper).toResponse(firstInvoice);
         verify(invoiceMapper).toResponse(secondInvoice);
+        verifyNoInteractions(numberConversionClient);
     }
 
     @Test
     void shouldFindInvoiceDetailById() {
-        Invoice invoice = Invoice.builder().id(1L).invoiceNumber("INV-001").build();
+        Invoice invoice = Invoice.builder()
+                .id(1L)
+                .invoiceNumber("INV-001")
+                .total(new BigDecimal("114.00"))
+                .build();
         InvoiceDetailResponse expectedResponse = new InvoiceDetailResponse();
 
         when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
-        when(invoiceMapper.toDetailResponse(invoice, null)).thenReturn(expectedResponse);
+        when(numberConversionClient.convertToWords(new BigDecimal("114.00")))
+                .thenReturn("one hundred fourteen and zero cents");
+        when(invoiceMapper.toDetailResponse(invoice, "one hundred fourteen and zero cents"))
+                .thenReturn(expectedResponse);
 
         InvoiceDetailResponse result = invoiceService.findById(1L);
 
         assertThat(result).isSameAs(expectedResponse);
-        verify(invoiceMapper).toDetailResponse(invoice, null);
+        verify(numberConversionClient).convertToWords(new BigDecimal("114.00"));
+        verify(invoiceMapper).toDetailResponse(invoice, "one hundred fourteen and zero cents");
+    }
+
+    @Test
+    void shouldPropagateLegacyServiceExceptionWhenConvertingInvoiceTotal() {
+        Invoice invoice = Invoice.builder().id(1L).total(new BigDecimal("114.00")).build();
+        LegacyServiceException exception = new LegacyServiceException("Proveedor no disponible");
+
+        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(invoice));
+        when(numberConversionClient.convertToWords(new BigDecimal("114.00"))).thenThrow(exception);
+
+        assertThatThrownBy(() -> invoiceService.findById(1L))
+                .isSameAs(exception);
+
+        verify(invoiceMapper, never()).toDetailResponse(any(), any());
     }
 
     @Test

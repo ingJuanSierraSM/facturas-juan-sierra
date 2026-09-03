@@ -7,6 +7,7 @@ import com.juansierra.global_invoice_api.entity.Invoice;
 import com.juansierra.global_invoice_api.entity.InvoiceTypeConfig;
 import com.juansierra.global_invoice_api.entity.User;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
+import com.juansierra.global_invoice_api.integration.NumberConversionClient;
 import com.juansierra.global_invoice_api.mapper.InvoiceMapper;
 import com.juansierra.global_invoice_api.repository.InvoiceRepository;
 import com.juansierra.global_invoice_api.repository.InvoiceTypeConfigRepository;
@@ -29,19 +30,22 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final UserRepository userRepository;
     private final InvoiceMapper invoiceMapper;
     private final TaxStrategyResolver taxStrategyResolver;
+    private final NumberConversionClient numberConversionClient;
 
     public InvoiceServiceImpl(
             InvoiceRepository invoiceRepository,
             InvoiceTypeConfigRepository invoiceTypeConfigRepository,
             UserRepository userRepository,
             InvoiceMapper invoiceMapper,
-            TaxStrategyResolver taxStrategyResolver
+            TaxStrategyResolver taxStrategyResolver,
+            NumberConversionClient numberConversionClient
     ) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceTypeConfigRepository = invoiceTypeConfigRepository;
         this.userRepository = userRepository;
         this.invoiceMapper = invoiceMapper;
         this.taxStrategyResolver = taxStrategyResolver;
+        this.numberConversionClient = numberConversionClient;
     }
 
     @Override
@@ -81,7 +85,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
 
-        return invoiceMapper.toDetailResponse(invoice, null);
+        String totalInWords = numberConversionClient.convertToWords(invoice.getTotal());
+        return invoiceMapper.toDetailResponse(invoice, totalInWords);
     }
 
     private void applyTaxCalculation(Invoice invoice, TaxCalculation calculation) {

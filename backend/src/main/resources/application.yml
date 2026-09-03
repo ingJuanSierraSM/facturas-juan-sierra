@@ -14,3 +14,7 @@ spring:
   sql:
     init:
       mode: always
+
+integration:
+  dataflex:
+    number-conversion-url: https://www.dataaccess.com/webservicesserver/NumberConversion.wso

@@ -15,6 +15,7 @@ import com.juansierra.global_invoice_api.dto.response.InvoiceDetailResponse;
 import com.juansierra.global_invoice_api.dto.response.InvoiceResponse;
 import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
+import com.juansierra.global_invoice_api.integration.LegacyServiceException;
 import com.juansierra.global_invoice_api.service.interfaces.InvoiceService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -151,6 +152,17 @@ class InvoiceControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("No existe una factura con el id 99"));
+    }
+
+    @Test
+    void shouldReturnBadGatewayWhenNumberConversionServiceFails() throws Exception {
+        when(invoiceService.findById(1L))
+                .thenThrow(new LegacyServiceException("No fue posible convertir el total de la factura a letras"));
+
+        mockMvc.perform(get("/api/v1/invoices/{invoiceId}", 1L))
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.status").value(502))
+                .andExpect(jsonPath("$.message").value("No fue posible convertir el total de la factura a letras"));
     }
 
     private InvoiceResponse invoiceResponse(Long id, String invoiceNumber, BigDecimal total) {
