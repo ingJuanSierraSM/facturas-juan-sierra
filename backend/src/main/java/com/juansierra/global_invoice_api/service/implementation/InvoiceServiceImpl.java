@@ -6,6 +6,7 @@ import com.juansierra.global_invoice_api.dto.response.InvoiceResponse;
 import com.juansierra.global_invoice_api.entity.Invoice;
 import com.juansierra.global_invoice_api.entity.InvoiceTypeConfig;
 import com.juansierra.global_invoice_api.entity.User;
+import com.juansierra.global_invoice_api.exception.DuplicateInvoiceException;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
 import com.juansierra.global_invoice_api.integration.NumberConversionClient;
 import com.juansierra.global_invoice_api.mapper.InvoiceMapper;
@@ -49,6 +50,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Transactional
     public InvoiceResponse createInvoice(CreateInvoiceRequest request) {
+        if (invoiceRepository.existsByInvoiceNumber(request.getInvoiceNumber())) {
+            throw new DuplicateInvoiceException(request.getInvoiceNumber());
+        }
+
         InvoiceTypeConfig taxConfiguration = invoiceTypeConfigRepository
                 .findByTypeAndActiveTrue(request.getType())
                 .orElseThrow(() -> new IllegalStateException(

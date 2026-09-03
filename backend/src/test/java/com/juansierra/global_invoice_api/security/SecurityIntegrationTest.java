@@ -2,6 +2,7 @@ package com.juansierra.global_invoice_api.security;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.juansierra.global_invoice_api.entity.User;
@@ -51,6 +52,39 @@ class SecurityIntegrationTest {
                                 }
                                 """.formatted("SECURITY-" + UUID.randomUUID())))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldRejectDuplicateInvoiceNumberForDifferentInvoiceType() throws Exception {
+        String invoiceNumber = "SECURITY-" + UUID.randomUUID();
+        String authorization = authorizationFor("operator", UserRole.OPERATOR);
+
+        mockMvc.perform(post("/api/v1/invoices")
+                        .header("Authorization", authorization)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "invoiceNumber": "%s",
+                                  "type": "NATIONAL",
+                                  "subtotal": 100000
+                                }
+                                """.formatted(invoiceNumber)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/v1/invoices")
+                        .header("Authorization", authorization)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "invoiceNumber": "%s",
+                                  "type": "GOVERNMENT",
+                                  "subtotal": 100000
+                                }
+                                """.formatted(invoiceNumber)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.errors.invoiceNumber")
+                        .value("El numero de factura ya se encuentra registrado"));
     }
 
     @Test

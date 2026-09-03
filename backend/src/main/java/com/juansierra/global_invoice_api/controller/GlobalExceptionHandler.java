@@ -1,6 +1,7 @@
 package com.juansierra.global_invoice_api.controller;
 
 import com.juansierra.global_invoice_api.dto.response.ApiErrorResponse;
+import com.juansierra.global_invoice_api.exception.DuplicateInvoiceException;
 import com.juansierra.global_invoice_api.exception.InvoiceNotFoundException;
 import com.juansierra.global_invoice_api.integration.LegacyServiceException;
 import java.time.LocalDateTime;
@@ -56,6 +57,18 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(DuplicateInvoiceException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateInvoice(DuplicateInvoiceException exception) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                exception.getMessage(),
+                Map.of("invoiceNumber", "El numero de factura ya se encuentra registrado")
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(LegacyServiceException.class)
