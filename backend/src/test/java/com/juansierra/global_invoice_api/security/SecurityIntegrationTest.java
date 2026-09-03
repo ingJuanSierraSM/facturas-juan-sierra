@@ -93,6 +93,12 @@ class SecurityIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void shouldRejectDashboardWithoutToken() throws Exception {
+        mockMvc.perform(get("/api/v1/dashboard/invoices-by-type"))
+                .andExpect(status().isUnauthorized());
+    }
+
     private String authorizationFor(String username, UserRole role) {
         User user = User.builder().username(username).role(role).build();
         return "Bearer " + jwtService.generateToken(user);

@@ -49,6 +49,20 @@ class CreateInvoiceRequestTest {
     }
 
     @Test
+    void shouldFailValidationWhenExportHasBlankCustomsCode() {
+        CreateInvoiceRequest request = new CreateInvoiceRequest(
+                "INV-001",
+                InvoiceType.EXPORT,
+                new BigDecimal("100.00"),
+                "   "
+        );
+
+        Set<ConstraintViolation<CreateInvoiceRequest>> violations = validator.validate(request);
+
+        assertThat(violations).anyMatch(violation -> "customsCodeValid".contentEquals(violation.getPropertyPath().toString()));
+    }
+
+    @Test
     void shouldFailValidationWhenNationalHasCustomsCode() {
         CreateInvoiceRequest request = new CreateInvoiceRequest(
                 "INV-001",

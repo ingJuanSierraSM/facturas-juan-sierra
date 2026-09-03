@@ -31,4 +31,13 @@ class TaxStrategyResolverTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Estrategia tributaria duplicada");
     }
+
+    @Test
+    void shouldRejectInvoiceTypeWithoutRegisteredStrategy() {
+        TaxStrategyResolver resolver = new TaxStrategyResolver(List.of(new NationalTaxStrategy()));
+
+        assertThatThrownBy(() -> resolver.resolve(InvoiceType.EXPORT))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("No existe estrategia tributaria");
+    }
 }

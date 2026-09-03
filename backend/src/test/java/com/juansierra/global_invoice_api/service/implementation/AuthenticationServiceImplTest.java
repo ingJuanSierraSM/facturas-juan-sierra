@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceImplTest {
@@ -67,5 +68,18 @@ class AuthenticationServiceImplTest {
         assertThatThrownBy(() -> authenticationService.login(request)).isSameAs(exception);
 
         verifyNoInteractions(userRepository, jwtService);
+    }
+
+    @Test
+    void shouldRejectLoginWhenAuthenticatedUserIsNoLongerAvailable() {
+        LoginRequest request = new LoginRequest("operator", "secret");
+        when(userRepository.findByUsername("operator")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> authenticationService.login(request))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessage("Usuario no encontrado");
+
+        verify(authenticationManager).authenticate(any());
+        verifyNoInteractions(jwtService);
     }
 }

@@ -34,6 +34,14 @@ class JwtServiceTest {
                 .isInstanceOf(ExpiredJwtException.class);
     }
 
+    @Test
+    void shouldRejectTokenForDifferentUser() {
+        JwtService jwtService = new JwtService(SECRET, 3_600_000L);
+        String token = jwtService.generateToken(user("operator", UserRole.OPERATOR));
+
+        assertThat(jwtService.isTokenValid(token, userDetails("auditor", "AUDITOR"))).isFalse();
+    }
+
     private User user(String username, UserRole role) {
         return User.builder().username(username).role(role).build();
     }

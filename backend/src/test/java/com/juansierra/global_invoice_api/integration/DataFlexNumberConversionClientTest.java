@@ -59,6 +59,36 @@ class DataFlexNumberConversionClientTest {
         mockServer.verify();
     }
 
+    @Test
+    void shouldThrowLegacyServiceExceptionWhenProviderRespondsWithBlankBody() {
+        mockServer.expect(requestTo(SERVICE_URL))
+                .andRespond(withSuccess(" ", MediaType.TEXT_XML));
+
+        assertThatThrownBy(() -> client.convertToWords(new BigDecimal("100.00")))
+                .isInstanceOf(LegacyServiceException.class)
+                .hasMessage("La respuesta del servicio DataFlex esta vacia");
+
+        mockServer.verify();
+    }
+
+    @Test
+    void shouldThrowLegacyServiceExceptionWhenSoapResponseHasNoConversionResult() {
+        mockServer.expect(requestTo(SERVICE_URL))
+                .andRespond(withSuccess("""
+                        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                          <soap:Body>
+                            <unexpectedResponse />
+                          </soap:Body>
+                        </soap:Envelope>
+                        """, MediaType.TEXT_XML));
+
+        assertThatThrownBy(() -> client.convertToWords(new BigDecimal("100.00")))
+                .isInstanceOf(LegacyServiceException.class)
+                .hasMessage("La respuesta del servicio DataFlex no contiene una conversion valida");
+
+        mockServer.verify();
+    }
+
     private String soapResponse(String conversion) {
         return """
                 <?xml version="1.0" encoding="utf-8"?>

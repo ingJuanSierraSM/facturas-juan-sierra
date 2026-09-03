@@ -50,4 +50,15 @@ class DashboardControllerTest {
 
         verify(dashboardService).getInvoicesByType();
     }
+
+    @Test
+    void shouldReturnEmptyListWhenThereAreNoInvoices() throws Exception {
+        when(dashboardService.getInvoicesByType()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/v1/dashboard/invoices-by-type"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(dashboardService).getInvoicesByType();
+    }
 }
