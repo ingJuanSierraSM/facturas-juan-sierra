@@ -7,20 +7,28 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public record CreateInvoiceRequest(
-        @NotBlank(message = "El numero de factura es obligatorio")
-        String invoiceNumber,
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateInvoiceRequest {
 
-        @NotNull(message = "El tipo de factura es obligatorio")
-        InvoiceType type,
+    @NotBlank(message = "El numero de factura es obligatorio")
+    private String invoiceNumber;
 
-        @NotNull(message = "El subtotal es obligatorio")
-        @Positive(message = "El subtotal debe ser mayor que cero")
-        BigDecimal subtotal,
+    @NotNull(message = "El tipo de factura es obligatorio")
+    private InvoiceType type;
 
-        String customsCode
-) {
+    @NotNull(message = "El subtotal es obligatorio")
+    @Positive(message = "El subtotal debe ser mayor que cero")
+    private BigDecimal subtotal;
+
+    private String customsCode;
 
     @JsonIgnore
     @AssertTrue(message = "El codigo de aduana es obligatorio solo para facturas de exportacion")

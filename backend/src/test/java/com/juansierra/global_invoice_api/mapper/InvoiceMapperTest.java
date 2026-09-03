@@ -46,14 +46,14 @@ class InvoiceMapperTest {
 
         InvoiceResponse response = mapper.toResponse(invoice);
 
-        assertThat(response.id()).isEqualTo(1L);
-        assertThat(response.invoiceNumber()).isEqualTo("INV-001");
-        assertThat(response.type()).isEqualTo(InvoiceType.NATIONAL);
-        assertThat(response.subtotal()).isEqualByComparingTo("100.00");
-        assertThat(response.total()).isEqualByComparingTo("119.00");
-        assertThat(response.createdAt()).isEqualTo(LocalDateTime.of(2026, 9, 2, 20, 0));
-        assertThat(Arrays.stream(InvoiceResponse.class.getRecordComponents())
-                .map(component -> component.getName()))
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getInvoiceNumber()).isEqualTo("INV-001");
+        assertThat(response.getType()).isEqualTo(InvoiceType.NATIONAL);
+        assertThat(response.getSubtotal()).isEqualByComparingTo("100.00");
+        assertThat(response.getTotal()).isEqualByComparingTo("119.00");
+        assertThat(response.getCreatedAt()).isEqualTo(LocalDateTime.of(2026, 9, 2, 20, 0));
+        assertThat(Arrays.stream(InvoiceResponse.class.getDeclaredFields())
+                .map(field -> field.getName()))
                 .containsExactly("id", "invoiceNumber", "type", "subtotal", "total", "createdAt");
     }
 
@@ -63,11 +63,11 @@ class InvoiceMapperTest {
 
         InvoiceDetailResponse response = mapper.toDetailResponse(invoice, "ciento diecinueve pesos");
 
-        assertThat(response.id()).isEqualTo(1L);
-        assertThat(response.invoiceNumber()).isEqualTo("INV-001");
-        assertThat(response.total()).isEqualByComparingTo("119.00");
-        assertThat(response.totalInWords()).isEqualTo("ciento diecinueve pesos");
-        assertThat(response.createdByUsername()).isEqualTo("operator");
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getInvoiceNumber()).isEqualTo("INV-001");
+        assertThat(response.getTotal()).isEqualByComparingTo("119.00");
+        assertThat(response.getTotalInWords()).isEqualTo("ciento diecinueve pesos");
+        assertThat(response.getCreatedByUsername()).isEqualTo("operator");
     }
 
     private Invoice buildInvoice() {

@@ -12,10 +12,10 @@ public class InvoiceMapper {
 
     public Invoice toEntity(CreateInvoiceRequest request) {
         return Invoice.builder()
-                .invoiceNumber(request.invoiceNumber())
-                .type(request.type())
-                .subtotal(request.subtotal())
-                .customsCode(request.customsCode())
+                .invoiceNumber(request.getInvoiceNumber())
+                .type(request.getType())
+                .subtotal(request.getSubtotal())
+                .customsCode(request.getCustomsCode())
                 .build();
     }
 
