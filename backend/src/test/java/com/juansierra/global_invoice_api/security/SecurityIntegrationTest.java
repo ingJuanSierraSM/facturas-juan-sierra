@@ -79,6 +79,20 @@ class SecurityIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldAllowAuditorToReadDashboard() throws Exception {
+        mockMvc.perform(get("/api/v1/dashboard/invoices-by-type")
+                        .header("Authorization", authorizationFor("auditor", UserRole.AUDITOR)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldRejectDashboardForOperator() throws Exception {
+        mockMvc.perform(get("/api/v1/dashboard/invoices-by-type")
+                        .header("Authorization", authorizationFor("operator", UserRole.OPERATOR)))
+                .andExpect(status().isForbidden());
+    }
+
     private String authorizationFor(String username, UserRole role) {
         User user = User.builder().username(username).role(role).build();
         return "Bearer " + jwtService.generateToken(user);

@@ -10,7 +10,9 @@ import com.juansierra.global_invoice_api.enums.InvoiceType;
 import com.juansierra.global_invoice_api.enums.UserRole;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -99,6 +101,40 @@ class RepositoryPersistenceIntegrationTest {
         assertThat(operator.isEnabled()).isTrue();
     }
 
+    @Test
+    void shouldAggregateInvoiceTotalsByType() {
+        User operator = findOperator();
+        Map<InvoiceType, BigDecimal> totalsBefore = totalAmountsByType();
+
+        invoiceRepository.saveAndFlush(buildInvoice(
+                nextInvoiceNumber(),
+                InvoiceType.NATIONAL,
+                new BigDecimal("119.00"),
+                operator
+        ));
+        invoiceRepository.saveAndFlush(buildInvoice(
+                nextInvoiceNumber(),
+                InvoiceType.NATIONAL,
+                new BigDecimal("238.00"),
+                operator
+        ));
+        invoiceRepository.saveAndFlush(buildInvoice(
+                nextInvoiceNumber(),
+                InvoiceType.EXPORT,
+                new BigDecimal("100.00"),
+                operator
+        ));
+
+        entityManager.clear();
+
+        Map<InvoiceType, BigDecimal> totalsAfter = totalAmountsByType();
+
+        assertThat(totalsAfter.get(InvoiceType.NATIONAL))
+                .isEqualByComparingTo(totalsBefore.getOrDefault(InvoiceType.NATIONAL, BigDecimal.ZERO).add(new BigDecimal("357.00")));
+        assertThat(totalsAfter.get(InvoiceType.EXPORT))
+                .isEqualByComparingTo(totalsBefore.getOrDefault(InvoiceType.EXPORT, BigDecimal.ZERO).add(new BigDecimal("100.00")));
+    }
+
     private User findOperator() {
         return userRepository.findByUsername("operator").orElseThrow();
     }
@@ -115,6 +151,28 @@ class RepositoryPersistenceIntegrationTest {
                 .total(new BigDecimal("114.00"))
                 .createdBy(createdBy)
                 .build();
+    }
+
+    private Invoice buildInvoice(String invoiceNumber, InvoiceType type, BigDecimal total, User createdBy) {
+        return Invoice.builder()
+                .invoiceNumber(invoiceNumber)
+                .type(type)
+                .subtotal(new BigDecimal("100.00"))
+                .vatRate(new BigDecimal("0.19"))
+                .taxAmount(new BigDecimal("19.00"))
+                .withholdingRate(BigDecimal.ZERO)
+                .withholdingAmount(BigDecimal.ZERO)
+                .total(total)
+                .createdBy(createdBy)
+                .build();
+    }
+
+    private Map<InvoiceType, BigDecimal> totalAmountsByType() {
+        return invoiceRepository.findTotalAmountsByType().stream()
+                .collect(Collectors.toMap(
+                        InvoiceTotalByTypeProjection::getType,
+                        InvoiceTotalByTypeProjection::getTotalAmount
+                ));
     }
 
     private String nextInvoiceNumber() {

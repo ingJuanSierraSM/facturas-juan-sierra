@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/invoices").hasRole("OPERATOR")
                         .requestMatchers(HttpMethod.GET, "/api/v1/invoices", "/api/v1/invoices/**")
                         .hasAnyRole("OPERATOR", "AUDITOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/dashboard/**").hasRole("AUDITOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
