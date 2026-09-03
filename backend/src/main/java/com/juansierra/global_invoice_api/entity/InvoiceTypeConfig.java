@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "invoice_type_configs")
+@Table(name = "invoice_type_config")
 public class InvoiceTypeConfig {
 
     @Id
