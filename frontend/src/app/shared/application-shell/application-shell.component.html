@@ -1,0 +1,31 @@
+<div class="application-shell">
+  <header class="application-header">
+    <img class="header-logo" src="brand/logo-davivienda.svg" alt="Davivienda" />
+
+    <div class="header-user">
+      <span class="user-summary">
+        <ng-icon name="lucideCircleUserRound" aria-hidden="true" />
+        <span>{{ currentUser()?.username }}</span>
+        <small>{{ currentUser()?.role === 'AUDITOR' ? 'Auditor' : 'Operador' }}</small>
+      </span>
+      <button class="logout-button" type="button" (click)="logout()">
+        <ng-icon name="lucideLogOut" aria-hidden="true" />
+        Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  <div class="application-body">
+    <nav class="application-navigation" aria-label="Navegación principal">
+      <p>GLOBAL INVOICE</p>
+      <a routerLink="/facturas" routerLinkActive="is-active">
+        <ng-icon name="lucideReceiptText" aria-hidden="true" />
+        Facturas
+      </a>
+    </nav>
+
+    <main class="application-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

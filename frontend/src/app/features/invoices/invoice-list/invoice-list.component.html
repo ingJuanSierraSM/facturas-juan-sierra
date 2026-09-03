@@ -1,0 +1,68 @@
+<section class="invoice-page" aria-labelledby="invoice-list-title">
+  <header class="page-header">
+    <div>
+      <h1 id="invoice-list-title">Facturas</h1>
+      <p>Consulta y revisa las facturas registradas.</p>
+    </div>
+    @if (!isLoading() && !errorMessage()) {
+      <p class="invoice-count">{{ invoices().length }} facturas</p>
+    }
+  </header>
+
+  @if (isLoading()) {
+    <div class="page-state" aria-live="polite">
+      <ng-icon name="lucideLoaderCircle" aria-hidden="true" />
+      <p>Cargando facturas...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="page-state page-state--error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" (click)="loadInvoices()">Reintentar</button>
+    </div>
+  } @else if (invoices().length === 0) {
+    <div class="page-state">
+      <ng-icon name="lucideReceiptText" aria-hidden="true" />
+      <p>No hay facturas registradas.</p>
+    </div>
+  } @else {
+    <div class="table-region">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Factura</th>
+            <th scope="col">Tipo</th>
+            <th scope="col" class="numeric">Subtotal</th>
+            <th scope="col" class="numeric">Total</th>
+            <th scope="col" class="numeric">Fecha</th>
+            <th scope="col" class="details-column">Detalles</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invoice of invoices(); track invoice.id) {
+            <tr>
+              <td class="invoice-number">{{ invoice.invoiceNumber }}</td>
+              <td>
+                <span class="invoice-type" [class]="'invoice-type invoice-type--' + invoice.type.toLowerCase()">
+                  {{ getInvoiceTypeLabel(invoice.type) }}
+                </span>
+              </td>
+              <td class="numeric">{{ invoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td class="numeric">{{ invoice.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td class="numeric">{{ invoice.createdAt | date: 'dd MMM y' : undefined : 'es-CO' }}</td>
+              <td class="details-column">
+                <a
+                  class="detail-link"
+                  [routerLink]="['/facturas', invoice.id]"
+                  [attr.aria-label]="'Ver detalles de la factura ' + invoice.invoiceNumber"
+                  title="Ver detalles"
+                >
+                  <ng-icon name="lucideEye" aria-hidden="true" />
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

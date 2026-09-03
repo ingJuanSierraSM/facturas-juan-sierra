@@ -1,3 +1,21 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoice-detail.component';
+import { InvoiceListComponent } from './features/invoices/invoice-list/invoice-list.component';
+import { ApplicationShellComponent } from './shared/application-shell/application-shell.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: '',
+    component: ApplicationShellComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'facturas' },
+      { path: 'facturas', component: InvoiceListComponent },
+      { path: 'facturas/:invoiceId', component: InvoiceDetailComponent },
+    ],
+  },
+  { path: '**', redirectTo: 'facturas' },
+];

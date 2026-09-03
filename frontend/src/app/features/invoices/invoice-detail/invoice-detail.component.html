@@ -1,0 +1,52 @@
+<section class="detail-page" aria-labelledby="invoice-detail-title">
+  <a class="back-link" routerLink="/facturas">
+    <ng-icon name="lucideArrowLeft" aria-hidden="true" />
+    Volver al listado
+  </a>
+
+  @if (isLoading()) {
+    <div class="page-state" aria-live="polite">
+      <ng-icon name="lucideLoaderCircle" aria-hidden="true" />
+      <p>Cargando detalle de factura...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="page-state page-state--error" role="alert">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else if (invoice(); as currentInvoice) {
+    <header class="detail-header">
+      <h1 id="invoice-detail-title">Factura {{ currentInvoice.invoiceNumber }}</h1>
+      <p>Detalle de la factura registrada.</p>
+    </header>
+
+    <div class="detail-grid">
+      <section aria-labelledby="invoice-information-title">
+        <h2 id="invoice-information-title">Información de factura</h2>
+        <dl>
+          <div><dt>Número</dt><dd>{{ currentInvoice.invoiceNumber }}</dd></div>
+          <div><dt>Tipo tributario</dt><dd>{{ getInvoiceTypeLabel(currentInvoice.type) }}</dd></div>
+          <div><dt>Fecha de creación</dt><dd>{{ currentInvoice.createdAt | date: 'dd MMM y, h:mm a' : undefined : 'es-CO' }}</dd></div>
+          <div><dt>Creada por</dt><dd>{{ currentInvoice.createdByUsername }}</dd></div>
+          @if (currentInvoice.customsCode) {
+            <div><dt>Código aduanero</dt><dd>{{ currentInvoice.customsCode }}</dd></div>
+          }
+        </dl>
+      </section>
+
+      <section aria-labelledby="tax-calculation-title">
+        <h2 id="tax-calculation-title">Cálculo tributario</h2>
+        <dl>
+          <div><dt>Subtotal</dt><dd>{{ currentInvoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
+          <div><dt>IVA ({{ currentInvoice.vatRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.taxAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
+          <div><dt>Retención ({{ currentInvoice.withholdingRate | percent: '1.0-2' : 'es-CO' }})</dt><dd>{{ currentInvoice.withholdingAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
+          <div class="total-row"><dt>Total</dt><dd>{{ currentInvoice.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <div class="amount-in-words">
+      <span>Valor total en palabras</span>
+      {{ currentInvoice.totalInWords }}
+    </div>
+  }
+</section>

@@ -1,0 +1,157 @@
+:host {
+  display: block;
+}
+
+.detail-page {
+  color: #202124;
+  padding: 36px 48px 54px;
+}
+
+.back-link {
+  align-items: center;
+  color: #252629;
+  display: inline-flex;
+  font-size: 15px;
+  font-weight: 700;
+  gap: 8px;
+  margin-bottom: 22px;
+  text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: #b52b27;
+}
+
+.detail-header {
+  border-bottom: 1px solid #d8d8d8;
+  margin-bottom: 32px;
+  padding-bottom: 19px;
+}
+
+h1 {
+  color: #17181a;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+
+.detail-header p {
+  color: #34363a;
+  font-size: 15px;
+  margin: 0;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 42px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+h2 {
+  border-bottom: 2px solid #d6332f;
+  color: #202124;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+}
+
+dl {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+dl div {
+  align-items: baseline;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+dt {
+  color: #45474c;
+  font-size: 15px;
+}
+
+dd {
+  color: #17181a;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  text-align: right;
+}
+
+.total-row {
+  border-top: 1px solid #bfc0c2;
+  margin-top: 4px;
+  padding-top: 14px;
+}
+
+.total-row dd {
+  color: #17181a;
+  font-size: 22px;
+}
+
+.amount-in-words {
+  background: #f3f3f3;
+  border-left: 4px solid #d6332f;
+  color: #202124;
+  font-size: 16px;
+  line-height: 1.45;
+  margin-top: 38px;
+  padding: 18px 20px;
+}
+
+.amount-in-words span {
+  color: #303236;
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.page-state {
+  align-items: center;
+  color: #202124;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  min-height: 260px;
+  text-align: center;
+}
+
+.page-state ng-icon {
+  color: #b52b27;
+  font-size: 34px;
+}
+
+.page-state p {
+  color: #202124;
+  font-size: 16px;
+  margin: 0;
+}
+
+.page-state--error p {
+  color: #8d201b;
+}
+
+@media (max-width: 720px) {
+  .detail-page {
+    padding: 30px 20px 40px;
+  }
+
+  h1 {
+    font-size: 29px;
+  }
+
+  .detail-grid {
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+}
