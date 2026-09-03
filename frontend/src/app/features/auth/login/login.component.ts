@@ -54,7 +54,10 @@ export class LoginComponent {
       next: () => {
         this.authService.rememberUsername(normalizedUsername, rememberSession);
         this.isSubmitting.set(false);
-        void this.router.navigateByUrl('/facturas');
+        const destination = this.authService.getAuthenticatedUser()?.role === 'AUDITOR'
+          ? '/dashboard'
+          : '/facturas';
+        void this.router.navigateByUrl(destination);
       },
       error: (error: HttpErrorResponse) => {
         this.errorMessage.set(

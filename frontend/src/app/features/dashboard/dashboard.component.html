@@ -1,0 +1,57 @@
+<section class="dashboard-page" aria-labelledby="dashboard-title">
+  <header class="page-header">
+    <h1 id="dashboard-title">Resumen de facturación</h1>
+    <p>Distribución del valor facturado por tipo tributario.</p>
+  </header>
+
+  @if (isLoading()) {
+    <div class="page-state" aria-live="polite">
+      <p>Cargando información del dashboard...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="page-state page-state--error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" (click)="loadDashboard()">Reintentar</button>
+    </div>
+  } @else if (!hasDashboardData()) {
+    <div class="page-state">
+      <p>No hay facturas registradas para mostrar en el dashboard.</p>
+    </div>
+  } @else {
+    <div class="dashboard-grid">
+      <section class="chart-section" aria-labelledby="chart-title">
+        <h2 id="chart-title">Facturación por tipo</h2>
+        <div class="chart-container">
+          <canvas #chartCanvas aria-label="Gráfico circular de facturación por tipo tributario"></canvas>
+          <div class="chart-total" aria-hidden="true">
+            <span>Valor total</span>
+            <strong>{{ totalAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="summary-section" aria-labelledby="summary-title">
+        <h2 id="summary-title">Detalle de distribución</h2>
+        <p class="total-caption">Valor facturado acumulado</p>
+        <p class="total-amount">{{ totalAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</p>
+
+        <div class="summary-list">
+          @for (summary of summaries(); track summary.type) {
+            <div class="summary-row">
+              <p class="type-label">
+                <span class="type-swatch" [style.background-color]="summary.color"></span>
+                {{ summary.label }}
+              </p>
+              <p class="type-amount">
+                {{ summary.totalAmount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}
+                <span>{{ summary.percentage | number: '1.1-1' : 'es-CO' }} %</span>
+              </p>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <p class="dashboard-note">Los valores se actualizan con las facturas registradas en el sistema.</p>
+  }
+</section>

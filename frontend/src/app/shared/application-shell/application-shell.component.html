@@ -18,6 +18,12 @@
   <div class="application-body">
     <nav class="application-navigation" aria-label="Navegación principal">
       <p>GLOBAL INVOICE</p>
+      @if (isAuditor()) {
+        <a routerLink="/dashboard" routerLinkActive="is-active">
+          <ng-icon name="lucideChartPie" aria-hidden="true" />
+          Dashboard
+        </a>
+      }
       <a routerLink="/facturas" routerLinkActive="is-active">
         <ng-icon name="lucideReceiptText" aria-hidden="true" />
         Facturas
