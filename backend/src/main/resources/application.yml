@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: global-invoice-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/global_invoice
+    username: globalinvoice
+    password: ${DB_PASSWORD:root1}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
