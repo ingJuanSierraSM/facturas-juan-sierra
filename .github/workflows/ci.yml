@@ -37,6 +37,10 @@ jobs:
           java-version: '21'
           cache: maven
 
+      - name: Dar permisos al wrapper de Maven
+        working-directory: backend
+        run: chmod +x ./mvnw
+
       - name: Verificar y construir backend
         working-directory: backend
         run: ./mvnw --batch-mode clean verify
