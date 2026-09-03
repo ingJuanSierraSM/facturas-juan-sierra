@@ -1,0 +1,148 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.application-shell {
+  background: #f5f5f5;
+  color: #1f2023;
+  min-height: 100dvh;
+}
+
+.application-header {
+  align-items: center;
+  background: #d6332f;
+  display: flex;
+  height: 88px;
+  justify-content: space-between;
+  padding: 0 42px;
+}
+
+.header-logo {
+  filter: brightness(0) invert(1);
+  height: auto;
+  max-width: 244px;
+  width: 100%;
+}
+
+.header-user,
+.user-summary,
+.logout-button {
+  align-items: center;
+  display: flex;
+}
+
+.header-user {
+  color: #ffffff;
+  gap: 28px;
+}
+
+.user-summary {
+  column-gap: 8px;
+  font-size: 15px;
+}
+
+.user-summary small {
+  border-left: 1px solid rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  margin-left: 4px;
+  padding-left: 12px;
+}
+
+.logout-button {
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.application-body {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  min-height: calc(100dvh - 88px);
+}
+
+.application-navigation {
+  background: #b72d29;
+  color: #ffffff;
+  padding: 30px 16px;
+}
+
+.application-navigation p {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0 12px 18px;
+}
+
+.application-navigation a {
+  align-items: center;
+  border-left: 3px solid transparent;
+  color: #ffffff;
+  column-gap: 12px;
+  display: flex;
+  font-size: 16px;
+  padding: 14px 12px;
+  text-decoration: none;
+}
+
+.application-navigation a.is-active {
+  background: #ffffff;
+  border-left-color: #1f2023;
+  color: #1f2023;
+}
+
+.application-content {
+  background: #ffffff;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .application-header {
+    height: 70px;
+    padding: 0 20px;
+  }
+
+  .header-logo {
+    max-width: 190px;
+  }
+
+  .user-summary span,
+  .user-summary small,
+  .logout-button {
+    font-size: 0;
+  }
+
+  .logout-button ng-icon,
+  .user-summary ng-icon {
+    font-size: 22px;
+  }
+
+  .application-body {
+    display: block;
+    min-height: calc(100dvh - 70px);
+  }
+
+  .application-navigation {
+    padding: 8px 14px;
+  }
+
+  .application-navigation p {
+    display: none;
+  }
+
+  .application-navigation a {
+    border-bottom: 3px solid transparent;
+    border-left: 0;
+    display: inline-flex;
+    padding: 11px 8px;
+  }
+
+  .application-navigation a.is-active {
+    border-bottom-color: #1f2023;
+  }
+}

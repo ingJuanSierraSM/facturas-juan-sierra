@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: global-invoice-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/global_invoice
+    username: globalinvoice
+    password: ${DB_PASSWORD:root1}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+
+integration:
+  dataflex:
+    number-conversion-url: https://www.dataaccess.com/webservicesserver/NumberConversion.wso
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:global-invoice-academic-secret-change-me-2026}
+    expiration-ms: 3600000

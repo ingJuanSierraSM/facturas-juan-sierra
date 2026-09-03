@@ -1,0 +1,80 @@
+<section class="invoice-create-page" aria-labelledby="invoice-create-title">
+  <header class="page-header">
+    <h1 id="invoice-create-title">Nueva factura</h1>
+    <p>Registra la información base para calcular los valores tributarios.</p>
+  </header>
+
+  <form class="invoice-form" [formGroup]="invoiceForm" (ngSubmit)="submit()" novalidate>
+    <h2>Datos de la factura</h2>
+
+    @if (submitError()) {
+      <p class="submit-error" role="alert">{{ submitError() }}</p>
+    }
+
+    <div class="form-field">
+      <label for="invoice-number">Número de factura</label>
+      <input
+        id="invoice-number"
+        type="text"
+        formControlName="invoiceNumber"
+        autocomplete="off"
+        (input)="clearServerFieldError('invoiceNumber')"
+        [attr.aria-describedby]="getFieldError('invoiceNumber') ? 'invoice-number-error' : null"
+      />
+      @if (getFieldError('invoiceNumber'); as error) {
+        <p id="invoice-number-error" class="field-error">{{ error }}</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="invoice-type">Tipo de factura</label>
+      <select id="invoice-type" formControlName="type">
+        <option value="NATIONAL">Nacional</option>
+        <option value="EXPORT">Exportación</option>
+        <option value="GOVERNMENT">Gobierno</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="invoice-subtotal">Subtotal</label>
+      <input
+        id="invoice-subtotal"
+        type="number"
+        formControlName="subtotal"
+        min="0.01"
+        step="0.01"
+        inputmode="decimal"
+        (input)="clearServerFieldError('subtotal')"
+        [attr.aria-describedby]="getFieldError('subtotal') ? 'invoice-subtotal-error' : null"
+      />
+      @if (getFieldError('subtotal'); as error) {
+        <p id="invoice-subtotal-error" class="field-error">{{ error }}</p>
+      }
+    </div>
+
+    @if (isExport) {
+      <div class="form-field">
+        <label for="customs-code">Código aduanero</label>
+        <p class="field-help">Obligatorio para facturas de exportación.</p>
+        <input
+          id="customs-code"
+          type="text"
+          formControlName="customsCode"
+          autocomplete="off"
+          (input)="clearServerFieldError('customsCode')"
+          [attr.aria-describedby]="getFieldError('customsCode') ? 'customs-code-error' : null"
+        />
+        @if (getFieldError('customsCode'); as error) {
+          <p id="customs-code-error" class="field-error">{{ error }}</p>
+        }
+      </div>
+    }
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Creando factura...' : 'Crear factura' }}
+      </button>
+      <a routerLink="/facturas">Cancelar</a>
+    </div>
+  </form>
+</section>
